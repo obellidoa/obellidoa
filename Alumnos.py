@@ -1,43 +1,92 @@
-print("Bievenido al Asistente del Estudiante Irresponsable.")
-print("En este programa te ayudaremos a salvar el semestre.")
-print("Aunque no garantizamos nada, la verdad.")
-print("Primero, dinos tu nombre:")
-nombre=input("")
-print("Muy bien, ", nombre, ", en el Asistente del Estudiante Irreponsable tenemos varias funciones.")
-print("La primera función es el -placeholder-, para usar esta función, presiona 1.")
-def seleccion ():
-    f_seleccionada = input("Elije una opción: ").strip().lower()
-    if f_seleccionada == '1':
-        print("Bienvenido al -placeholder-, esta función te ayudará a monitorerar tus notas.")
-        print("Primero dinos, ¿el curso que llevas incluye pesos en el cálculo de promedio?")
-        print("Si no incluye pesos, presiona 1.")
-        print("Si incluye pesos, presiona 2.")
-        def seleccion_prom ():
-            prom_seleccionado = int()
-            if prom_seleccionado==1:
-              notas_normal = []
-              normal_num_prom = int(input("¿Cuántas calificaciones hay en el curso?"))
-            for i in range(normal_num_prom):
-                notas_normal.append(int(input("Ingresa una calificación:")))
-                if 0 in notas_normal:
-                    print("-")
-            suma_prom_normal=sum(int(i) for i in notas_normal)
-            prom_final_normal=suma_prom_normal/normal_num_prom
-            if prom_final_normal==20:
+import os
+
+print("Bievenido al Asistente del Estudiante Irresponsable.\nEn este programa te ayudaremos a salvar el semestre.\n\n..."
+      "Aunque, la verdad, no garantizamos nada.\n")
+nick=str(input("Primero, dinos tu nombre: "))
+print("\nBienvenido, "+nick+", al Asistente del Estudiante Irreponsable.")
+
+
+def seleccion():
+    print("¿Qúe deseas hacer hoy?:\n")
+    print(
+        " - Calcular mis promedios. Para usar esta función, presiona 1.\n - Ver mis proyectos pendientes. Para usar esta"
+        " función, presiona 2.\n - Ver mi horario. Para usar esta función, presiona 3.\n - Ver mi rol de "
+        "exámenes. Para usar esta función, presiona 4.\n ")
+    f_sel = int(input("Elige una opción: "))
+    def calc_promedio():
+        print("\n-----CALCULADORA DE PROMEDIOS-----\nEsta función te ayudará a monitorerar tus notas.\nPrimero dinos, ¿el "
+              "curso que llevas incluye pesos en el cálculo de promedio?")
+        while True:
+            print(" - Si no incluye pesos, presiona 1.\n - Si incluye pesos, presiona 2.")
+            sist_cal = int(input("Elige una opción.\n"))
+            notas = []
+            num_notas = int(input("¿Cuántas calificaciones hay en el curso? "))
+            if sist_cal == 1:
+                for i in range (1,num_notas+1):
+                    notas.append(int(input("Ingrese la nota N°"+str(i)+": ")))
+                promedio = sum(notas)/num_notas
+            elif sist_cal == 2:
+                pesos = []
+                acumulado = 0
+                for i in range (1,num_notas+1):
+                    notas.append(int(input("Ingrese la nota N°" + str(i) + ": ")))
+                    pesos.append(int(input("Ingrese el peso de la nota N°"+str(i)+": ")))
+                    acumulado += notas[i-1]*pesos[i-1]
+                promedio = acumulado/sum(pesos)
+            else:
+                print("Opción Inválida, inténtelo nuevamente")
+
+            print("Tu promedio es "+str(promedio))
+            if promedio == 20:
                 print("Felicidades, has conseguido una nota perfecta.")
-            elif prom_final_normal<20 and prom_final_normal>12:
+            elif promedio >= 11 and promedio < 20:
                 print("Muy bien, te esforzaste.")
-            elif prom_final_normal==11:
+            elif promedio >= 10.5 and promedio < 11:
                 print("Por poco.")
-            elif prom_final_normal<10.5:
+            elif promedio < 10.5:
                 print("Anda diciéndole a tus padres lo de la bica")
             else:
                 print("Opción invalida. Intenta nuevamente.")
-            return True
-        while seleccion_prom():
-            pass
-    else:
-         print("Opción invalida. Intenta nuevamente.")
-    return True
-while seleccion():
-        pass
+            cont = str(input("¿Calcular el promedio de otro curso? [y/n]"))
+            if cont == "n":
+                break
+
+    def ver_proyectos():
+        print("\n-----VISUALIZADOR DE PROYECTOS-----\n\nEsta función te permitirá ver tus proyectos pendientes. Además "
+              "podrás añadir nuevos proyectos.\n¿Qué es lo que deseas hacer?\n - Ver mis proyectos pendientes. Presiona"
+              " 1.\n - Agregar un nuevo proyecto. Presiona 2.\n")
+        proy_accion = int(input("Elige una opción: "))
+
+        if proy_accion == 1:
+            print("Esta es tu lista de proyectos pendientes:\n")
+            lista_proyectos = open("proyectos.txt", 'r')
+            print(lista_proyectos.read())
+        elif proy_accion == 2:
+            proy = str(input("¿En qué consiste tu nuevo proyecto final? "))
+            fecha = str(input("Ingrese la fecha de entrega [dd/mm]: "))
+            lista_proyectos = open("proyectos.txt", 'w')
+            lista_proyectos.write(proy+"   "+fecha+"\n")
+            lista_proyectos = open("proyectos.txt", 'r')
+            print("Esta es tu lista de proyectos pendientes:\n")
+            print(lista_proyectos.read())
+
+    def ver_horario():
+        print("\n-----VISUALIZADOR DE HORARIO-----\nHorario 2017-2:\n")
+        horario = open("horario.txt",'r')
+        print(horario.read())
+        os.system('pause')
+
+    def rol_examenes():
+        print("\n-----ROL DE EXAMENES-----\nCiclo 2017-2:")
+        rol = open("rol.txt", 'r')
+        print(rol.read())
+        os.system('pause')
+
+    options = {1 : calc_promedio,
+               2 : ver_proyectos,
+               3 : ver_horario,
+               4 : rol_examenes}
+    options[f_sel]()
+
+# while True:
+seleccion()
